@@ -27,6 +27,13 @@ func main() {
 
 	defer con.Close()
 	//response
+
+	buf := make([]byte, 1024)
+
+	con.Read(buf)
+
+	fmt.Println(buf)
+
 	con.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 
 }
