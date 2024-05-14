@@ -26,7 +26,7 @@ func response404(con net.Conn) {
 }
 
 func responseUserAgent(con net.Conn, content string) {
-	lines := strings.Split(content, "/r/n")
+	lines := strings.Split(content, "\r\n")
 	fmt.Println("lines here", len(lines), lines)
 
 	userAgent := strings.Split(lines[2], ": ")[1]
