@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"strings"
-
-	// Uncomment this block to pass the first stage
 	"net"
 	"os"
+	"strings"
 )
 
 func responseEcho(con net.Conn, path string) {
@@ -44,7 +42,7 @@ func handleRequest(con net.Conn) {
 
 	content := string(buf[:contentLength])
 
-	fmt.Println(content)
+	fmt.Println("content here", content)
 
 	path := strings.Split(content, " ")[1]
 
