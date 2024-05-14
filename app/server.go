@@ -9,6 +9,12 @@ import (
 	"os"
 )
 
+func responseEcho(con net.Conn, path string) {
+	msg := strings.Split(path, "/")[2]
+	resp := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
+	con.Write([]byte(resp))
+}
+
 func response200(con net.Conn) {
 	con.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 }
@@ -32,6 +38,8 @@ func handleRequest(con net.Conn) {
 
 	if path == "/" {
 		response200(con)
+	} else if strings.HasPrefix(path, "/echo/") {
+		responseEcho(con, path)
 	} else {
 		response404(con)
 	}
