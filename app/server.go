@@ -19,8 +19,20 @@ func response200(con net.Conn) {
 	con.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 }
 
+/*
+HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nfoobar/1.2.3
+*/
+
 func response404(con net.Conn) {
 	con.Write([]byte("HTTP/1.1 404 Not Found\r\n\r\n"))
+}
+
+func responseUserAgent(con net.Conn, content string) {
+	lines := strings.Split(content, "/r/n")
+	fmt.Println(lines)
+	userAgent := strings.Split(lines[2], ":")[1]
+	resp := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(userAgent)) + "\r\n\r\n" + userAgent
+	con.Write([]byte(resp))
 }
 
 func handleRequest(con net.Conn) {
@@ -38,6 +50,8 @@ func handleRequest(con net.Conn) {
 
 	if path == "/" {
 		response200(con)
+	} else if path == "/user-agent" {
+		responseUserAgent(con, content)
 	} else if strings.HasPrefix(path, "/echo/") {
 		responseEcho(con, path)
 	} else {
