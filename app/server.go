@@ -73,13 +73,17 @@ func main() {
 
 	defer l.Close()
 
-	con, err := l.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection: ", err.Error())
-		os.Exit(1)
+	for {
+		con, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error accepting connection: ", err.Error())
+			os.Exit(1)
+		}
+
+		go handleRequest(con)
+
 	}
 
-	handleRequest(con)
 	//response
 
 }
