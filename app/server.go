@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"strings"
@@ -34,6 +35,15 @@ func responseUserAgent(con net.Conn, content string) {
 	con.Write([]byte(resp))
 }
 
+func responseFile(con net.Conn, path string) {
+	filename := strings.Split(path, "/")[2]
+	args := os.Args
+	directory := args[1]
+	log.Fatal(filename, args, directory)
+	response404(con)
+
+}
+
 func handleRequest(con net.Conn) {
 
 	defer con.Close()
@@ -53,6 +63,8 @@ func handleRequest(con net.Conn) {
 		responseUserAgent(con, content)
 	} else if strings.HasPrefix(path, "/echo/") {
 		responseEcho(con, path)
+	} else if strings.HasPrefix(path, "/files/") {
+		responseFile(con, path)
 	} else {
 		response404(con)
 	}
