@@ -42,7 +42,7 @@ func responseFile(con net.Conn, path string) {
 	_, err := os.Stat(filepath)
 
 	if os.IsNotExist(err) {
-		fmt.Println("File does not exist")
+		response404(con)
 	} else {
 		content, err := os.ReadFile(filepath)
 
