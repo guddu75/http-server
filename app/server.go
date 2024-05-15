@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"strings"
 )
+
+var directory string
 
 func responseEcho(con net.Conn, path string) {
 	msg := strings.Split(path, "/")[2]
@@ -37,11 +38,23 @@ func responseUserAgent(con net.Conn, content string) {
 
 func responseFile(con net.Conn, path string) {
 	filename := strings.Split(path, "/")[2]
-	args := os.Args
-	directory := args[1]
-	log.Fatal(filename, args, directory)
-	response404(con)
+	filepath := fmt.Sprintf("%s/%s", directory, filename)
+	_, err := os.Stat(filepath)
 
+	if os.IsNotExist(err) {
+		fmt.Println("File does not exist")
+	} else {
+		content, err := os.ReadFile(filepath)
+
+		data := string(content)
+
+		if err != nil {
+			fmt.Println("Can not open file")
+		} else {
+			resp := "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + fmt.Sprint(len(data)) + "\r\n\r\n" + data
+			con.Write([]byte(resp))
+		}
+	}
 }
 
 func handleRequest(con net.Conn) {
@@ -74,6 +87,12 @@ func handleRequest(con net.Conn) {
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Println("Logs from your program will appear here!")
+
+	args := os.Args
+
+	if len(args) > 2 && args[1] == "--directory" {
+		directory = args[2]
+	}
 
 	// Uncomment this block to pass the first stage
 	//
