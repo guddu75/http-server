@@ -44,6 +44,8 @@ func parseRequest(con net.Conn) *Request {
 
 	headers := strings.Split(lines[2], ": ")
 
+	req.headers = make(map[string]string)
+
 	for i := 0; i < len(headers); i += 2 {
 		req.headers[headers[i]] = headers[i+1]
 	}
@@ -114,22 +116,6 @@ func postFile(con net.Conn, req Request) {
 	}
 
 	con.Write([]byte("HTTP/1.1 201 Created"))
-	// _, err := os.Stat(filepath)
-
-	// if os.IsNotExist(err) {
-	// 	response404(con)
-	// } else {
-	// 	content, err := os.ReadFile(filepath)
-
-	// 	data := string(content)
-
-	// 	if err != nil {
-	// 		fmt.Println("Can not open file")
-	// 	} else {
-	// 		resp := "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + fmt.Sprint(len(data)) + "\r\n\r\n" + data
-	// 		con.Write([]byte(resp))
-	// 	}
-	// }
 }
 
 func handleRequest(con net.Conn) {
@@ -137,6 +123,8 @@ func handleRequest(con net.Conn) {
 	defer con.Close()
 
 	req := parseRequest(con)
+
+	log.Print("Request parsed successfully")
 
 	if req.method == "POST" {
 		if strings.HasPrefix(req.path, "/files/") {
