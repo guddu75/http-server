@@ -32,7 +32,11 @@ func parseRequest(con net.Conn) *Request {
 
 	lines := strings.Split(content, "\r\n")
 
+	log.Print(lines)
+
 	firstLine := strings.Split(lines[0], " ")
+
+	log.Print(firstLine)
 
 	req.method = firstLine[0]
 
@@ -40,7 +44,7 @@ func parseRequest(con net.Conn) *Request {
 
 	req.httpVersion = firstLine[2]
 
-	req.host = strings.Split(lines[1], ": ")[1]
+	// req.host = strings.Split(lines[1], ": ")[1]
 
 	headers := strings.Split(lines[2], ": ")
 
