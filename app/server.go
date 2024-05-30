@@ -54,9 +54,10 @@ func parseRequest(con net.Conn) *Request {
 		log.Print(headers)
 
 		req.headers = make(map[string]string)
-
-		for i := 0; i < len(headers); i += 2 {
-			req.headers[headers[i]] = headers[i+1]
+		if len(headers) > 0 {
+			for i := 0; i < len(headers); i += 2 {
+				req.headers[headers[i]] = headers[i+1]
+			}
 		}
 
 		log.Print("here")
