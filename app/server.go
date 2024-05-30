@@ -94,9 +94,17 @@ func parseRequest(con net.Conn) *Request {
 func responseEcho(con net.Conn, req Request) {
 	msg := strings.Split(req.path, "/")[2]
 	enc := ""
-	if req.headers["Accept-Encoding"] == "gzip" {
-		enc = "Content-Encoding: gzip\r\n"
+	// if req.headers["Accept-Encoding"] == "gzip" {
+	// 	enc = "Content-Encoding: gzip\r\n"
+	// }
+	encodingMethods := strings.Split(req.headers["Accept-Encoding"], ", ")
+
+	for _, method := range encodingMethods {
+		if method == "gzip" {
+			enc = "Content-Encoding: gzip\r\n"
+		}
 	}
+
 	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
 	con.Write([]byte(resp))
 }
