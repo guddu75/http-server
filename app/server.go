@@ -32,7 +32,7 @@ func parseRequest(con net.Conn) *Request {
 
 	lines := strings.Split(content, "\r\n")
 
-	log.Print("lines", lines)
+	log.Print("lines", lines, len(lines))
 
 	firstLine := strings.Split(lines[0], " ")
 
@@ -48,24 +48,24 @@ func parseRequest(con net.Conn) *Request {
 		req.host = strings.Split(lines[1], ": ")[1]
 	}
 
-	// if len(lines) >= 3 {
-	// 	headers := strings.Split(lines[2], ": ")
+	if len(lines) >= 3 {
+		headers := strings.Split(lines[2], ": ")
 
-	// 	log.Print("headers", headers)
+		log.Print("headers", headers)
 
-	// 	req.headers = make(map[string]string)
-	// 	if len(headers) > 0 {
-	// 		for i := 0; i < len(headers); i += 2 {
-	// 			req.headers[headers[i]] = headers[i+1]
-	// 		}
-	// 	}
+		req.headers = make(map[string]string)
+		if len(headers) > 0 {
+			for i := 0; i < len(headers); i += 2 {
+				req.headers[headers[i]] = headers[i+1]
+			}
+		}
 
-	// 	log.Print("here")
-	// }
+		log.Print("here")
+	}
 
 	//body present or not
 
-	if len(lines) >= 4 {
+	if len(lines) >= 5 {
 		req.body = lines[4]
 	}
 
