@@ -50,6 +50,8 @@ func parseRequest(con net.Conn) *Request {
 
 	req.body = lines[4]
 
+	fmt.Println("request : ", req)
+
 	return req
 }
 
