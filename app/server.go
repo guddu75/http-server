@@ -9,6 +9,17 @@ import (
 
 var directory string
 
+type Request struct {
+	method  string
+	path    string
+	headers map[string]string
+	body    string
+}
+
+// func parseRe(con net.Conn) Request {
+
+// }
+
 func responseEcho(con net.Conn, path string) {
 	msg := strings.Split(path, "/")[2]
 	resp := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
@@ -57,9 +68,15 @@ func responseFile(con net.Conn, path string) {
 	}
 }
 
+// func postFile(con net.Conn, content string) {
+// 	lines := strings.Split(content, "\r\n")
+// 	fileContent :=
+// }
+
 func handleRequest(con net.Conn) {
 
 	defer con.Close()
+
 	buf := make([]byte, 1024)
 
 	contentLength, _ := con.Read(buf)
@@ -70,16 +87,24 @@ func handleRequest(con net.Conn) {
 
 	path := strings.Split(content, " ")[1]
 
-	if path == "/" {
-		response200(con)
-	} else if path == "/user-agent" {
-		responseUserAgent(con, content)
-	} else if strings.HasPrefix(path, "/echo/") {
-		responseEcho(con, path)
-	} else if strings.HasPrefix(path, "/files/") {
-		responseFile(con, path)
+	method := strings.Split(content, " ")[0]
+
+	if method == "POST" {
+		if strings.HasPrefix(path, "/files/") {
+			// postFile(con, content)
+		}
 	} else {
-		response404(con)
+		if path == "/" {
+			response200(con)
+		} else if path == "/user-agent" {
+			responseUserAgent(con, content)
+		} else if strings.HasPrefix(path, "/echo/") {
+			responseEcho(con, path)
+		} else if strings.HasPrefix(path, "/files/") {
+			responseFile(con, path)
+		} else {
+			response404(con)
+		}
 	}
 
 }
