@@ -55,7 +55,7 @@ func parseRequest(con net.Conn) *Request {
 	if len(lines) >= 3 {
 		headers := strings.Split(lines[2], ": ")
 
-		log.Print("headers", headers)
+		log.Print("headers", headers, len(headers))
 
 		req.headers = make(map[string]string)
 		if len(headers) > 0 {
