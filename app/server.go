@@ -93,7 +93,7 @@ func parseRequest(con net.Conn) *Request {
 	return req
 }
 
-func encode(msg string) {
+func encode(msg string) string {
 	var b bytes.Buffer
 	gz := gzip.NewWriter(&b)
 	if _, err := gz.Write([]byte(msg)); err != nil {
@@ -103,7 +103,7 @@ func encode(msg string) {
 		log.Fatal(err)
 	}
 	fmt.Println("compressed msg", b.String())
-
+	return b.String()
 }
 
 func responseEcho(con net.Conn, req Request) {
@@ -120,9 +120,9 @@ func responseEcho(con net.Conn, req Request) {
 		}
 	}
 
-	encode(msg)
+	encodedMessage := encode(msg)
 
-	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
+	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(encodedMessage)) + "\r\n\r\n" + encodedMessage
 	con.Write([]byte(resp))
 }
 
