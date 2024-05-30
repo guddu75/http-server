@@ -52,7 +52,7 @@ func parseRequest(con net.Conn) *Request {
 
 	req.body = lines[4]
 
-	fmt.Println("request : ", req)
+	// fmt.Println("request : ", req)
 
 	return req
 }
@@ -115,7 +115,7 @@ func postFile(con net.Conn, req Request) {
 		log.Fatal(err)
 	}
 
-	con.Write([]byte("HTTP/1.1 201 Created"))
+	con.Write([]byte("HTTP/1.1 201 Created\r\n\r\n"))
 }
 
 func handleRequest(con net.Conn) {
