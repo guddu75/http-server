@@ -32,7 +32,11 @@ func parseRequest(con net.Conn) *Request {
 
 	lines := strings.Split(content, "\r\n")
 
-	log.Print("lines", lines, len(lines))
+	// log.Print("lines", lines, len(lines))
+
+	for i, line := range lines {
+		fmt.Println(i, line)
+	}
 
 	firstLine := strings.Split(lines[0], " ")
 
