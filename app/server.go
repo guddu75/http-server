@@ -83,7 +83,7 @@ func handleRequest(con net.Conn) {
 
 	content := string(buf[:contentLength])
 
-	fmt.Println("content here", content)
+	fmt.Printf("content here %q", content)
 
 	path := strings.Split(content, " ")[1]
 
