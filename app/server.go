@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"strings"
@@ -100,10 +101,34 @@ func responseFile(con net.Conn, req Request) {
 	}
 }
 
-// func postFile(con net.Conn, content string) {
-// 	lines := strings.Split(content, "\r\n")
-// 	fileContent :=
-// }
+func postFile(con net.Conn, req Request) {
+	filename := strings.Split(req.path, "/")[2]
+	filepath := fmt.Sprintf("%s/%s", directory, filename)
+
+	err := os.WriteFile(filepath, []byte(req.body), 0666)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	con.Write([]byte("HTTP/1.1 201 Created"))
+	// _, err := os.Stat(filepath)
+
+	// if os.IsNotExist(err) {
+	// 	response404(con)
+	// } else {
+	// 	content, err := os.ReadFile(filepath)
+
+	// 	data := string(content)
+
+	// 	if err != nil {
+	// 		fmt.Println("Can not open file")
+	// 	} else {
+	// 		resp := "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + fmt.Sprint(len(data)) + "\r\n\r\n" + data
+	// 		con.Write([]byte(resp))
+	// 	}
+	// }
+}
 
 func handleRequest(con net.Conn) {
 
@@ -113,7 +138,7 @@ func handleRequest(con net.Conn) {
 
 	if req.method == "POST" {
 		if strings.HasPrefix(req.path, "/files/") {
-			// postFile(con, content)
+			postFile(con, *req)
 		}
 	} else if req.method == "GET" {
 		if req.path == "/" {
