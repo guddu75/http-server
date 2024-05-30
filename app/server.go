@@ -32,11 +32,11 @@ func parseRequest(con net.Conn) *Request {
 
 	lines := strings.Split(content, "\r\n")
 
-	log.Print(lines)
+	log.Print("lines", lines)
 
 	firstLine := strings.Split(lines[0], " ")
 
-	log.Print(firstLine)
+	log.Print("firstLine", firstLine)
 
 	req.method = firstLine[0]
 
@@ -51,7 +51,7 @@ func parseRequest(con net.Conn) *Request {
 	if len(lines) >= 3 {
 		headers := strings.Split(lines[2], ": ")
 
-		log.Print(headers)
+		log.Print("headers", headers)
 
 		req.headers = make(map[string]string)
 		if len(headers) > 0 {
