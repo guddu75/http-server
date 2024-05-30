@@ -117,18 +117,12 @@ func responseEcho(con net.Conn, req Request) {
 	for _, method := range encodingMethods {
 		if method == "gzip" {
 			enc = "Content-Encoding: gzip\r\n"
+			msg = encode(msg)
+			break
 		}
 	}
 
 	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
-	con.Write([]byte(resp))
-
-	if enc != "" {
-		encodedMessage := encode(msg)
-		resp = "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(encodedMessage)) + "\r\n\r\n" + encodedMessage
-
-	}
-
 	con.Write([]byte(resp))
 }
 
