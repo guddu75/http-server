@@ -48,6 +48,8 @@ func parseRequest(con net.Conn) *Request {
 
 	headers := strings.Split(lines[2], ": ")
 
+	log.Print(headers)
+
 	req.headers = make(map[string]string)
 
 	for i := 0; i < len(headers); i += 2 {
