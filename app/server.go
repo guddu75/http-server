@@ -44,19 +44,27 @@ func parseRequest(con net.Conn) *Request {
 
 	req.httpVersion = firstLine[2]
 
-	// req.host = strings.Split(lines[1], ": ")[1]
-
-	headers := strings.Split(lines[2], ": ")
-
-	log.Print(headers)
-
-	req.headers = make(map[string]string)
-
-	for i := 0; i < len(headers); i += 2 {
-		req.headers[headers[i]] = headers[i+1]
+	if len(lines) >= 2 {
+		req.host = strings.Split(lines[1], ": ")[1]
 	}
 
-	req.body = lines[4]
+	if len(lines) >= 3 {
+		headers := strings.Split(lines[2], ": ")
+
+		log.Print(headers)
+
+		req.headers = make(map[string]string)
+
+		for i := 0; i < len(headers); i += 2 {
+			req.headers[headers[i]] = headers[i+1]
+		}
+	}
+
+	//body present or not
+
+	if len(lines) >= 4 {
+		req.body = lines[4]
+	}
 
 	// fmt.Println("request : ", req)
 
