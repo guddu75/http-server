@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+const (
+	OK        = "200 OK"
+	CREATED   = "201 Created"
+	NOT_FOUND = "404 Not Found"
+)
+
 var directory string
 
 type Request struct {
@@ -15,6 +21,13 @@ type Request struct {
 	path        string
 	httpVersion string
 	host        string
+	headers     map[string]string
+	body        string
+}
+
+type Response struct {
+	httpVersion string
+	resCode     string
 	headers     map[string]string
 	body        string
 }
@@ -60,7 +73,6 @@ func parseRequest(con net.Conn) *Request {
 		req.headers = make(map[string]string)
 		if len(headers) > 1 {
 			for i := 0; i < len(headers); i += 2 {
-				log.Print("inside loop")
 				req.headers[headers[i]] = headers[i+1]
 			}
 		}
@@ -81,7 +93,11 @@ func parseRequest(con net.Conn) *Request {
 
 func responseEcho(con net.Conn, req Request) {
 	msg := strings.Split(req.path, "/")[2]
-	resp := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
+	enc := ""
+	if req.headers["Accept-Encoding"] == "gzip" {
+		enc = "Content-Encoding: gzip\r\n"
+	}
+	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
 	con.Write([]byte(resp))
 }
 
