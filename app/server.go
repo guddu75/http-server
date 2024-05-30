@@ -102,7 +102,7 @@ func encode(msg string) {
 	if err := gz.Close(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(b.Bytes())
+	fmt.Println("compressed msg", b.String())
 
 }
 
