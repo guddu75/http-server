@@ -58,6 +58,8 @@ func parseRequest(con net.Conn) *Request {
 		for i := 0; i < len(headers); i += 2 {
 			req.headers[headers[i]] = headers[i+1]
 		}
+
+		log.Print("here")
 	}
 
 	//body present or not
