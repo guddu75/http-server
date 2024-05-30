@@ -120,9 +120,15 @@ func responseEcho(con net.Conn, req Request) {
 		}
 	}
 
-	encodedMessage := encode(msg)
+	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(msg)) + "\r\n\r\n" + msg
+	con.Write([]byte(resp))
 
-	resp := "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(encodedMessage)) + "\r\n\r\n" + encodedMessage
+	if enc != "" {
+		encodedMessage := encode(msg)
+		resp = "HTTP/1.1 200 OK\r\n" + enc + "Content-Type: text/plain\r\nContent-Length: " + fmt.Sprint(len(encodedMessage)) + "\r\n\r\n" + encodedMessage
+
+	}
+
 	con.Write([]byte(resp))
 }
 
